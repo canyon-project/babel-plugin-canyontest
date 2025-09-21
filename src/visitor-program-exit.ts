@@ -3,6 +3,7 @@ import generate from "@babel/generator";
 import fs from 'fs'
 import pathModule from 'path'
 import { enrichStatementMapWithHash, enrichFnMapWithHash } from './helpers/statement-map-hash'
+import { computeHash } from './helpers/hash'
 
 export const visitorProgramExit = (api,path,serviceParams) => {
 
@@ -34,6 +35,19 @@ export const visitorProgramExit = (api,path,serviceParams) => {
     }
   } catch (e) {
     // 忽略提取失败，保持现有行为
+  }
+  // 基于文件内容计算 contentHash，并写入内存对象与 AST 中的 coverageData
+  const originalCodeForHash = (path && path.hub && path.hub.file && path.hub.file.code)
+    ? path.hub.file.code
+    : generate(path.node).code
+  const contentHash = computeHash(originalCodeForHash)
+  try {
+    if (initialCoverageDataForTheCurrentFile && typeof initialCoverageDataForTheCurrentFile === 'object') {
+      // @ts-ignore - 动态附加字段
+      initialCoverageDataForTheCurrentFile.contentHash = contentHash
+    }
+  } catch (e) {
+    // 忽略
   }
   if (generate(path.node).code.includes('coverageData')) {
     const t = api.types;
