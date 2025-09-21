@@ -45,6 +45,7 @@ export const visitorProgramExit = (api,path,serviceParams) => {
     if (initialCoverageDataForTheCurrentFile && typeof initialCoverageDataForTheCurrentFile === 'object') {
       // @ts-ignore - 动态附加字段
       initialCoverageDataForTheCurrentFile.contentHash = contentHash
+      initialCoverageDataForTheCurrentFile.content = originalCodeForHash
     }
   } catch (e) {
     // 忽略
