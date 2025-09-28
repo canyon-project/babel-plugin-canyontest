@@ -60,7 +60,7 @@ export function enrichStatementMapWithHash(
         console.log(hash, 'hash')
       }
       try {
-        statementMap[key].hash = hash
+        statementMap[key].contentHash = hash
         // statementMap[key].content = content
       } catch (e) {
         // ignore
@@ -143,7 +143,7 @@ export function enrichFnMapWithHash(
         console.log(hash, 'fnHash')
       }
       try {
-        fnMap[key].hash = hash
+        fnMap[key].contentHash = hash
         // fnMap[key].content = content
       } catch (e) {
         // ignore

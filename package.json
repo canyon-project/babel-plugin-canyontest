@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-canyontest",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "A Babel plugin cooperates with istanbul to report the coverage",
   "author": "Travis Zhang<https://github.com/travzhang>",
   "repository": {
