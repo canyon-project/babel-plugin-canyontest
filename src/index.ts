@@ -36,26 +36,11 @@ export default declare((api, config, dirname) => {
     visitor: {
       Program: {
         exit: (path) => {
-          const preset = ((process.env.CI_SERVER_URL || '').includes(newatob('Y3RyaXA=')) && config.disableAutoUpload)===undefined ? {
-              provider: 'tripgl',
-              // ==========以上是属性=============
-              // 代理配置
-              oneByOne: {
-                proxy:{
-                  protocol: 'http',
-                  host: newatob('cHJveHlnYXRlMi5jdHJpcGNvcnAuY29t'),
-                  port: 8080
-                }
-              }, //可配置代理 默认false
-              special: true, //默认false
-              keepMap: true, // 默认true
-              slug:'auto'
-            }
-            :{
-              provider: 'gitlab',
-              keepMap: true,
-              slug:'auto'
-            }
+          const preset = {
+            provider: 'gitlab',
+            keepMap: true,
+            slug:'auto'
+          }
           config = {
             ...preset,
             ...trim(config),
