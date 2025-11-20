@@ -4,6 +4,28 @@ import fs from "fs";
 import {computeHash} from "./helpers/hash";
 import {enrichFnMapWithHash, enrichStatementMapWithHash} from "./helpers/statement-map-hash";
 import sysPath from 'path'
+import libSourceMaps from "istanbul-lib-source-maps";
+import libCoverage from "istanbul-lib-coverage";
+
+
+
+export async function remapCoverage(obj:any) {
+  const res = await libSourceMaps
+    .createSourceMapStore()
+    .transformCoverage(libCoverage.createCoverageMap(obj));
+  const { data: data_1 } = res;
+  const obj_1 = {};
+  Object.entries(data_1).forEach(([key, value],index) => {
+    // @ts-ignore
+    const x = value["data"];
+    // @ts-ignore
+    obj_1[x.path] = {
+      ...x,
+    };
+  });
+  return obj_1
+}
+
 
 export const visitorProgramExit = (api,path,serviceParams) => {
 
@@ -61,6 +83,8 @@ export const visitorProgramExit = (api,path,serviceParams) => {
         'utf-8',
       );
       initialCoverageDataForTheCurrentFile.inputSourceMap = JSON.parse(pathString);
+
+
     }
   } catch (e) {
   }
@@ -81,6 +105,19 @@ export const visitorProgramExit = (api,path,serviceParams) => {
           fs.writeFileSync(`./.canyon_output/coverage-final-init-${String(Math.random()).replace('0.','')}.json`, JSON.stringify({
             [initialCoverageDataForTheCurrentFile.path]: initialCoverageDataForTheCurrentFile
           }, null, 2), 'utf-8');
+
+
+
+
+          //   用istanbuljs remap
+
+          remapCoverage({
+            [initialCoverageDataForTheCurrentFile.path]: initialCoverageDataForTheCurrentFile
+          }).then(r=>{
+            fs.writeFileSync(`./.canyon_output/coverage-final-init-source-map-${String(Math.random()).replace('0.','')}.json`, JSON.stringify(r, null, 2), 'utf-8');
+          })
+
+
         }
       }
     }
