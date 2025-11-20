@@ -119,7 +119,7 @@ export const visitorProgramExit = (api,path,serviceParams) => {
               const kaitou = `./.canyon_output/coverage-final-init-source-map-${String(Math.random()).replace('0.','')}`
 
 
-              const originFilePath = initialCoverageDataForTheCurrentFile.path
+              const originFilePath = Object.keys(r)[0]
 
               const c = fs.readFileSync(originFilePath,'utf-8')
 
