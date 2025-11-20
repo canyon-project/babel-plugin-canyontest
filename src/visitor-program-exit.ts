@@ -120,12 +120,13 @@ export const visitorProgramExit = (api,path,serviceParams) => {
 
 
               const originFilePath = Object.keys(r)[0]
+              const ss:any = Object.values(r)[0]
 
               const c = fs.readFileSync(originFilePath,'utf-8')
 
 
               fs.writeFileSync(`${kaitou}.json`, JSON.stringify({
-                ...initialCoverageDataForTheCurrentFile,
+                ...ss,
                 c:c
               }, null, 2), 'utf-8');
 
