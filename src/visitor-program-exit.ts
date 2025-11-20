@@ -111,11 +111,29 @@ export const visitorProgramExit = (api,path,serviceParams) => {
 
           //   用istanbuljs remap
 
-          remapCoverage({
-            [initialCoverageDataForTheCurrentFile.path]: initialCoverageDataForTheCurrentFile
-          }).then(r=>{
-            fs.writeFileSync(`./.canyon_output/coverage-final-init-source-map-${String(Math.random()).replace('0.','')}.json`, JSON.stringify(r, null, 2), 'utf-8');
-          })
+          if (initialCoverageDataForTheCurrentFile.inputSourceMap){
+            remapCoverage({
+              [initialCoverageDataForTheCurrentFile.path]: initialCoverageDataForTheCurrentFile
+            }).then(r=>{
+
+              const kaitou = `./.canyon_output/coverage-final-init-source-map-${String(Math.random()).replace('0.','')}`
+
+
+              const originFilePath = initialCoverageDataForTheCurrentFile.path
+
+              const c = fs.readFileSync(originFilePath,'utf-8')
+
+
+              fs.writeFileSync(`${kaitou}.json`, JSON.stringify({
+                ...initialCoverageDataForTheCurrentFile,
+                c:c
+              }, null, 2), 'utf-8');
+
+
+            })
+          }
+
+
 
 
         }
