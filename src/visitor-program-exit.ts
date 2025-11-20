@@ -1,14 +1,15 @@
 import {generateInitialCoverage} from "./helpers/generate-initial-coverage";
 import generate from "@babel/generator";
-import fs from 'fs'
-import pathModule from 'path'
-import { enrichStatementMapWithHash, enrichFnMapWithHash } from './helpers/statement-map-hash'
-import { computeHash } from './helpers/hash'
+import fs from "fs";
+import {computeHash} from "./helpers/hash";
+import {enrichFnMapWithHash, enrichStatementMapWithHash} from "./helpers/statement-map-hash";
+import sysPath from 'path'
 
 export const visitorProgramExit = (api,path,serviceParams) => {
 
   const initialCoverageDataForTheCurrentFile = generateInitialCoverage(generate(path.node).code,serviceParams)
 
+  // 这部分代码未经过大规模测试验证，谨防异常错误
   // 基于 statementMap 的位置信息，提取源码片段并写入 hash 字段
   try {
     if (
@@ -50,6 +51,47 @@ export const visitorProgramExit = (api,path,serviceParams) => {
   } catch (e) {
     // 忽略
   }
+
+
+  // 再尝试根据路径获取一下sourceMap
+  try {
+    if (!initialCoverageDataForTheCurrentFile.inputSourceMap){
+      const pathString = fs.readFileSync(
+        sysPath.resolve(initialCoverageDataForTheCurrentFile.path +'.map'),
+        'utf-8',
+      );
+      initialCoverageDataForTheCurrentFile.inputSourceMap = JSON.parse(pathString);
+    }
+  } catch (e) {
+  }
+
+  // 在内容补全后（含 content），再决定是否写入本地（仅 CI 环境）
+  try {
+    if (serviceParams && serviceParams.ci) {
+      // 判断是否是CI环境
+      // CI环境才生成.canyon_output/coverage-final.json文件
+      if (serviceParams.ci) {
+        const filePath = './.canyon_output/coverage-final.json';
+        const dir = sysPath.dirname(filePath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, {recursive: true});
+        }
+        // 防止返回的数据为空
+        if (initialCoverageDataForTheCurrentFile && initialCoverageDataForTheCurrentFile.path) {
+          fs.writeFileSync(`./.canyon_output/coverage-final-init-${String(Math.random()).replace('0.','')}.json`, JSON.stringify({
+            [initialCoverageDataForTheCurrentFile.path]: initialCoverageDataForTheCurrentFile
+          }, null, 2), 'utf-8');
+        }
+      }
+    }
+  } catch (e) {
+    // 忽略写入异常
+  }
+
+  //
+
+
+
   if (generate(path.node).code.includes('coverageData')) {
     const t = api.types;
     path.traverse({
@@ -90,6 +132,15 @@ export const visitorProgramExit = (api,path,serviceParams) => {
                   t.identifier("inputSourceMap"),
                   t.numericLiteral(1)
                 );
+              } else {
+                // 新增逻辑，如果本地也有那就设置成1
+                if (initialCoverageDataForTheCurrentFile?.inputSourceMap){
+                  const addField = t.objectProperty(
+                    t.identifier("inputSourceMap"), // 键名
+                    t.numericLiteral(1)
+                  );
+                  properties.push(addField);
+                }
               }
             }
 
@@ -120,28 +171,6 @@ export const visitorProgramExit = (api,path,serviceParams) => {
           }
         }
       }})
-  }
-  // 在内容补全后（含 content），再决定是否写入本地（仅 CI 环境）
-  try {
-    if (serviceParams && serviceParams.ci) {
-      const filePath = './.canyon_output/coverage-final.json'
-      const dir = pathModule.dirname(filePath)
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true })
-      }
-      if (initialCoverageDataForTheCurrentFile && initialCoverageDataForTheCurrentFile.path) {
-        const payload = {
-          [initialCoverageDataForTheCurrentFile.path]: initialCoverageDataForTheCurrentFile
-        }
-        fs.writeFileSync(
-          `./.canyon_output/coverage-final-${String(Math.random()).replace('0.','')}.json`,
-          JSON.stringify(payload, null, 2),
-          'utf-8'
-        )
-      }
-    }
-  } catch (e) {
-    // 忽略写入异常
   }
   return {initialCoverageDataForTheCurrentFile}
 }

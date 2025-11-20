@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-canyontest",
-  "version": "3.0.6",
+  "version": "2.0.33",
   "description": "A Babel plugin cooperates with istanbul to report the coverage",
   "author": "Travis Zhang<https://github.com/travzhang>",
   "repository": {
@@ -14,7 +14,6 @@
   "scripts": {
     "release": "babel src --extensions \".ts\" --out-dir lib",
     "pretest": "npm run release",
-    "build": "npm run release",
     "test": "babel features --config-file ./test-babel-config.js --out-dir dist",
     "prepublishOnly": "npm run release",
     "format": "biome check --write --unsafe ./src"
