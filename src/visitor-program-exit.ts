@@ -3,7 +3,7 @@ import fs from 'fs';
 import sysPath from 'path';
 import { generateInitialCoverage } from './helpers/generate-initial-coverage';
 import { computeHash } from './helpers/hash';
-import { remapCoverage } from './helpers/remapCoverage';
+import { remapCoverageByOld } from './helpers/remapCoverage';
 import {
   enrichFnMapWithHash,
   enrichStatementMapWithHash,
@@ -105,7 +105,7 @@ export const visitorProgramExit = (api, path, serviceParams, cfg) => {
 
           //   测试读取源码逻辑
           if (initialCoverageDataForTheCurrentFile.inputSourceMap) {
-            remapCoverage({
+            remapCoverageByOld({
               [initialCoverageDataForTheCurrentFile.path]:
                 initialCoverageDataForTheCurrentFile,
             }).then((r) => {
