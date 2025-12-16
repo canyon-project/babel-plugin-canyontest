@@ -5,109 +5,6 @@ function cov_pyv3wvd1g() {
   var gcv = "__coverage__";
   var coverageData = {
     path: "/Users/travzhang/Desktop/babel-plugin-canyontest/features/add.js",
-    statementMap: {
-      "0": {
-        start: {
-          line: 2,
-          column: 2
-        },
-        end: {
-          line: 4,
-          column: 3
-        }
-      },
-      "1": {
-        start: {
-          line: 3,
-          column: 4
-        },
-        end: {
-          line: 3,
-          column: 14
-        }
-      },
-      "2": {
-        start: {
-          line: 5,
-          column: 2
-        },
-        end: {
-          line: 5,
-          column: 12
-        }
-      },
-      "3": {
-        start: {
-          line: 8,
-          column: 0
-        },
-        end: {
-          line: 8,
-          column: 10
-        }
-      }
-    },
-    fnMap: {
-      "0": {
-        name: "add",
-        decl: {
-          start: {
-            line: 1,
-            column: 9
-          },
-          end: {
-            line: 1,
-            column: 12
-          }
-        },
-        loc: {
-          start: {
-            line: 1,
-            column: 19
-          },
-          end: {
-            line: 6,
-            column: 1
-          }
-        },
-        line: 1
-      }
-    },
-    branchMap: {
-      "0": {
-        loc: {
-          start: {
-            line: 2,
-            column: 2
-          },
-          end: {
-            line: 4,
-            column: 3
-          }
-        },
-        type: "if",
-        locations: [{
-          start: {
-            line: 2,
-            column: 2
-          },
-          end: {
-            line: 4,
-            column: 3
-          }
-        }, {
-          start: {
-            line: undefined,
-            column: undefined
-          },
-          end: {
-            line: undefined,
-            column: undefined
-          }
-        }],
-        line: 2
-      }
-    },
     s: {
       "0": 0,
       "1": 0,
@@ -127,7 +24,7 @@ function cov_pyv3wvd1g() {
     branch: "master",
     reporter: "xxxxx",
     compareTarget: "main",
-    version: "2.0.50",
+    version: "2.0.90",
     instrumentCwd: "/Users/travzhang/Desktop/babel-plugin-canyontest",
     dsn: "http://localhost:3000",
     buildID: "-",
