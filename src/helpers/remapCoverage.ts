@@ -22,7 +22,7 @@ function eee(newMap, oldMap) {
   const o = {};
   Object.entries(newMap).forEach(([key, value]) => {
     o[key] = {
-      // @ts-ignorer
+      // @ts-expect-errorr
       ...value,
       contentHash: oldMap[key]?.contentHash || '',
     };
@@ -34,7 +34,7 @@ export async function remapCoverageByOld(obj: any) {
   const aaa = await Promise.all(
     Object.values(obj).map((item) => {
       return remapCoverage({
-        // @ts-ignorer
+        // @ts-expect-errorr
         [item.path]: item,
       })
         .then((res) => {
@@ -45,15 +45,15 @@ export async function remapCoverageByOld(obj: any) {
         })
         .then((res) => {
           const r = {
-            // @ts-ignorer
+            // @ts-expect-errorr
             ...res,
-            // @ts-ignorer
+            // @ts-expect-errorr
             statementMap: eee(res.statementMap, item.statementMap),
-            // @ts-ignorer
+            // @ts-expect-errorr
             fnMap: eee(res.fnMap, item.fnMap),
-            // @ts-ignorer
+            // @ts-expect-errorr
             oldPath: item.path,
-            // @ts-ignorer
+            // @ts-expect-errorr
             contentHash: item.contentHash,
           };
           return r;
@@ -64,11 +64,11 @@ export async function remapCoverageByOld(obj: any) {
     }),
   );
   const obj2 = {};
-  // @ts-ignorer
+  // @ts-expect-errorr
   aaa.forEach((item) => {
     // 过滤作用
     if (item.path) {
-      // @ts-ignorer
+      // @ts-expect-errorr
       obj2[item.path] = item;
     }
   });

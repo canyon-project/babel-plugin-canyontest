@@ -159,9 +159,13 @@ export const visitorProgramExit = (api, path, serviceParams, cfg) => {
                   // 命名为 cov-final-remap 的原因是与老版本的uploader区别，待恢复
                   fs.writeFileSync(
                     `./.canyon_output/cov-final-remap-${String(Math.random()).replace('0.', '')}.json`,
-                    JSON.stringify({
-                      [originCodePath]:remappedCoverage
-                    }, null, 2),
+                    JSON.stringify(
+                      {
+                        [originCodePath]: remappedCoverage,
+                      },
+                      null,
+                      2,
+                    ),
                     'utf-8',
                   );
                 } else {
@@ -196,6 +200,17 @@ export const visitorProgramExit = (api, path, serviceParams, cfg) => {
             // 获取 coverageData 对象的 properties
             const properties = variablePath.node.init.properties;
 
+
+            // 处理 inputSourceMap，替换为数字 1
+            const inputSourceMapIndex = properties.findIndex((prop) =>
+              t.isIdentifier(prop.key, { name: 'inputSourceMap' }),
+            );
+
+            // 如果没有，且keepMap为true，那就要写进去
+            if (inputSourceMapIndex === -1 && serviceParams.keepMap && initialCoverageDataForTheCurrentFile?.inputSourceMap){
+              console.log('写进去')
+            }
+
             if (!serviceParams.keepMap) {
               // 替换 statementMap、fnMap、branchMap 删除逻辑，改成 inputSourceMap 替换为 1 的逻辑
               const keysToRemove = ['statementMap', 'fnMap', 'branchMap'];
@@ -209,10 +224,7 @@ export const visitorProgramExit = (api, path, serviceParams, cfg) => {
                 }
               });
 
-              // 处理 inputSourceMap，替换为数字 1
-              const inputSourceMapIndex = properties.findIndex((prop) =>
-                t.isIdentifier(prop.key, { name: 'inputSourceMap' }),
-              );
+
 
               if (inputSourceMapIndex !== -1) {
                 properties[inputSourceMapIndex] = t.objectProperty(
