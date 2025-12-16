@@ -208,7 +208,11 @@ export const visitorProgramExit = (api, path, serviceParams, cfg) => {
 
             // 如果没有，且keepMap为true，那就要写进去
             if (inputSourceMapIndex === -1 && serviceParams.keepMap && initialCoverageDataForTheCurrentFile?.inputSourceMap){
-              console.log('写进去')
+              const addField = t.objectProperty(
+                t.identifier('inputSourceMap'), // 键名
+                t.objectProperty(initialCoverageDataForTheCurrentFile?.inputSourceMap),
+              );
+              properties.push(addField);
             }
 
             if (!serviceParams.keepMap) {
