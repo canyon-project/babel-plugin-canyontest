@@ -210,7 +210,7 @@ export const visitorProgramExit = (api, path, serviceParams, cfg) => {
             if (inputSourceMapIndex === -1 && serviceParams.keepMap && initialCoverageDataForTheCurrentFile?.inputSourceMap){
               const addField = t.objectProperty(
                 t.identifier('inputSourceMap'), // 键名
-                t.objectExpression(initialCoverageDataForTheCurrentFile?.inputSourceMap),
+                t.valueToNode(initialCoverageDataForTheCurrentFile.inputSourceMap),
               );
               properties.push(addField);
             }
